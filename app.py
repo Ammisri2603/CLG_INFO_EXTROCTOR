@@ -99,10 +99,10 @@ USER QUESTION:
         with st.spinner("Searching college information..."):
 
             try:
-                response = client.models.generate_content(
-                    model="gemini-3.1-flash-lite",
-                    contents=instruction
-                )
+               response = client.models.generate_content(
+    model="gemini-3.5-flash-lite",
+    contents=instruction
+)
 
                 answer = response.text
 
