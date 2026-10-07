@@ -26,7 +26,7 @@ client = genai.Client(api_key=api_key)
 # PDF file
 PDF_FILE = "AI&ML-R23-JNTU-GV-B.Tech-Course Structure and Syllabus.pdf"
 
-# Read PDF
+
 @st.cache_data
 def extract_pdf_text():
     reader = PdfReader(PDF_FILE)
@@ -42,6 +42,7 @@ def extract_pdf_text():
     return text
 
 
+# Read PDF
 try:
     pdf_text = extract_pdf_text()
 except Exception as e:
@@ -54,33 +55,35 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
-# Display previous messages
+# Show previous messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 
-# User question
+# User input
 prompt = st.chat_input("Ask something about the college syllabus...")
 
 
 if prompt:
 
     st.session_state.messages.append(
-        {"role": "user", "content": prompt}
+        {
+            "role": "user",
+            "content": prompt
+        }
     )
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Send PDF information + question to Gemini
     instruction = f"""
 You are a College Information Extractor.
 
 Answer the user's question ONLY using the information
-available in the college PDF provided below.
+available in the college PDF below.
 
-If the answer is not available in the PDF, clearly say:
+If the answer is not available in the PDF, say:
 "I couldn't find that information in the provided college document."
 
 Do not invent or guess information.
@@ -99,17 +102,20 @@ USER QUESTION:
         with st.spinner("Searching college information..."):
 
             try:
-               response = client.models.generate_content(
-    model="gemini-3.5-flash-lite",
-    contents=instruction
-)
+                response = client.models.generate_content(
+                    model="gemini-3.5-flash-lite",
+                    contents=instruction
+                )
 
                 answer = response.text
 
                 st.markdown(answer)
 
                 st.session_state.messages.append(
-                    {"role": "assistant", "content": answer}
+                    {
+                        "role": "assistant",
+                        "content": answer
+                    }
                 )
 
             except Exception as e:
